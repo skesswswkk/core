@@ -1,0 +1,34 @@
+package hello.core;
+
+
+import hello.core.member.Grade;
+import hello.core.member.Member;
+import hello.core.member.MemberService;
+import hello.core.member.MemberServiceImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class MemberApp {
+    public static void main(String[] args) {
+
+        //시도1.
+//        MemberService memberService = new MemberServiceImpl(memberRepository);
+
+        //시도2. AppConfig 버전
+//        AppConfig appConfig = new AppConfig();
+//        MemberService memberService = appConfig.memberService();
+
+        //시도3. Spring 버전
+        //Spring은 항상 ApplicationContext 로 시작. Spring Container라고 생각하면 된다. 모든 @Bean 로 선언된 객체 관리.
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
+        MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
+
+        Member member = new Member(1L, "memberA", Grade.VIP);
+
+        memberService.join(member);
+        Member findMember = memberService.findMember(1L);
+
+        System.out.println("new member = " + member.getName());
+        System.out.println("find Member = " + findMember.getName());
+    }
+}
